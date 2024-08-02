@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://nycdob.github.io/ActiveNB_A1enlargements/data/iconlogo.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
+<link  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="viobeta.css" />    
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
+<title>DOB Violations Lookup</title>
+<style></style>
+</head>
+<body>
+<dialog class="_sInfo" tabindex="-1">
+<form method="dialog">
+<span  class="material-symbols-outlined pull-right closemodal ">Cancel</span>
+<h1><img  src="DOB-NOW-logo.png" alt="DOB Now">Correcting and Removing DOB Violations</h1>
+<p>To remove a DOB violation from a property record, the condition must be corrected and proof of that correction must be provided to the issuing unit. Visit the <a href="https://www.nyc.gov/site/buildings/dob/unit-descriptions.page" target="_blank">Unit Descriptions</a>&nbsp;page for the location of each unit.&nbsp;</p>
+<p>Applicable DOB civil penalty payments must also be made. To view violations on your property, access the <a href="https://a810-bisweb.nyc.gov/bisweb/bsqpm01.jsp" target="_blank">Buildings Information System (BIS)</a>. Refer to the <b>BIS Property Profile Overview</b> for the number of open DOB violations. DOB violations are shown without an asterisk next to the violation number; dismissed DOB violations are shown with an asterisk, <b>e.g., V*7052-18P</b>.</p>
+<p>Detailed information on certain DOB violations is available in BIS. If detailed information is not available, you may request copies of DOB violations from the issuing unit. The processing fee is $8.00 per copy for each violation; each additional duplicate copy of a violation is $5.00. You may also file a Freedom of Information Law (FOIL) request through <a href="https://a860-openrecords.nyc.gov/" target="_blank">NYC OpenRecords</a>.</p>
+<p>See instructions for DOB:</p>
+<ul>
+<li><a target="_blank" href="https://www.nyc.gov/site/buildings/safety/resolve-dob-boiler-violations.page">Boiler Violations</a></li>
+<li><a target="_blank" href="https://www.nyc.gov/site/buildings/safety/resolve-dob-elevator-violations.page">Elevator Violations</a></li>
+<li><a target="_blank" href="https://www.nyc.gov/site/buildings/safety/resolve-dob-fa%c3%a7ade-violations.page">Façade Violations</a></li>
+<li><a target="_blank" href="https://www.nyc.gov/site/buildings/safety/resolve-dob-fire-safety-violations.page">Fire Safety Violations</a></li>
+</ul>
+<p>NOTE: This app includes only DOB Violations and does not include OATH Violations.</p>
+<p>For all other DOB violations, <a target="_blank" href="https://www.nyc.gov/site/buildings/dob/unit-descriptions.page">contact the issuing unit directly</a>.</p>
+<button class="btn-lg"autofocus>Close</button>
+<div class="small nosplash">
+<input type="checkbox" id="nosplash" name="nosplash" />
+<label for="nosplash">Do not show this splash screen again</label>
+</div>
+</form>
+</dialog>
+<div class="_main" style="min-height:100vh">
+    <div class="kl">
+        <div>
+        <a href="https://www.nyc.gov/site/buildings/index.page" target="_blank" class="active"><img alt="DOB" src="data/dob_logo_white_transparent.png" height="40" width="80"></a>
+        </div>
+        <div class="tle">DOB Violations</div>
+        <div >Search Civil Penalties Owed for Property</div>
+        <div class="showhelp">Help</div>
+    </div>
+    <div class="middlebox">
+        <div class="_bl" >
+            <div class="maininput">
+                <div class="_rad">
+                <div><input class="_r" type="radio" id="addr" value="addr" name="proptype" checked><label for="addr">Address</label></div>
+                <div><input class="_r" type="radio" id="bin"  value="bin" name="proptype"><label for="bin"  >BIN</label></div>
+                </div>
+                <div class="_typelist">
+                    <input id="myinput" maxlength="99" minlength="3" zsize="40" type="search" autofocus placeholder="e.g. 280 Broadway Manhattan"/>
+                        <div class="selectordiv">
+                            <ul class="divlist" tabindex="-1"></ul>
+                        </div>
+                </div>
+                <div type="button" style="min-width:0;" ><div title="Search" id="gobutton" class="btn btn-primary">Show</div></div>
+            </div>
+            <div class="datacontent" > 
+            </div>
+        </div>
+        <div class="_br">
+            <div> 
+                <div style="padding: 5px;">
+                    <b>IMPORTANT</b>
+                    <p>&bullet; Amounts due must be validated and confirmed by DOB Official Staff at the time of payment.</p>
+                    <p>&bullet; Paying the violation does not cure or remove the violation.</p>
+                    <p>&bullet; For more information, visit <a href="https://www.nyc.gov/site/buildings/industry/inspections-violations.page" target="_blank">Inspections & Violations</a> or call DOB at (212) 566-5000.</p>
+                </div>
+            </div> 
+            <hr>
+            <div>
+                <a href="catindex.html" target="_blank">
+                    <div>
+                            <div>
+                                <img title="Map $500k or More" alt="Map $500k or more" src="mapgif.gif" height="30">
+                            </div>
+                            <div>
+                                <p>Map Violations Over $100,000<span class="material-symbols-outlined xx">open_in_new</span></p>
+                            </div>
+                    </div> 
+                </a>
+            </div> 
+            <div >
+                <a href="https://a810-dobnow.nyc.gov/publish/Index.html#!" target="_blank">
+                    <div>
+                            <div>
+                                <img title="DOB NOW Portal" alt="DOB Now Portal" src="DOB-NOW-logo.png" height="30">
+                            </div>
+                            <div>
+                                <p>DOB NOW Portal<span class="material-symbols-outlined xx">open_in_new</span> </p>
+                            </div>
+                    </div> 
+                </a>
+            </div> 
+        
+            <div >
+                <a href="https://nyc.gov/bis" target="_blank">
+                    <div>
+                            <div>
+                                <img title="DOB BIS" alt="BIS Web" src="NYC-5boros.png" height="30">
+                            </div>
+                            <div>
+                                <p>Building Information System<span class="material-symbols-outlined xx">open_in_new</span> </p>
+                            </div>
+                    </div> 
+                </a>
+            </div> 
+        </div> 
+    </div>
+<div class="_foot">
+<div>Built by DOB <a target="_blank" class="genlink" href="https://www.nyc.gov/site/buildings/dob/analytics-reports.page">Dev Squad</a></div>
+<div><a target="_blank" class="genlink" href="https://www.nyc.gov/"><img height=30 src="https://www1.nyc.gov/assets/home/images/global/nyc_white@x2.png" alt="NYC"></a></div>
+<div><a target="_blank" class="genlink" href="https://www.nyc.gov/home/terms-of-use.page">Terms of Use.</a></div>
+</div>
+</div>
+<script>
+void function _KxL() {
+const doerr =()=>{
+let x=document.createDocumentFragment();
+adiv=document.createElement("div");
+adiv.className="datacontent";
+adiv.innerHTML=`<div>
+<div><p>We’re sorry. We did not find any results for your search. Please try again.</p><p>Search Tips</p></div>
+<ul>
+<li>Select the appropriate search type: Address or BIN </li>
+<li>Address example: &nbsp;40 Main Street Queens</li>
+<li>Check for spelling errors</li>
+<li>Type four (4) or more characters for property suggestions</li>
+<li>Type more characters in the search field for better suggestions</li>
+<li>Look up NYC addresses and BINs: <a href="https://a810-bisweb.nyc.gov/bisweb/bispi00.jsp" target="_blank">DOB Building Information Search</a>
+</li></ul></div>`;
+x.appendChild(adiv);
+document.querySelector(".datacontent").replaceWith(x)
+}
+document.addEventListener("click",    e=>{  
+        if (e.target.getAttribute("class")?.includes("showhelp")) {
+            e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();
+            const _z2=document.querySelector("._sInfo");
+            const _z9=document.querySelector(".closemodal");                
+            _z9.focus();
+            _z2.showModal();
+            document.querySelector("dialog").scrollTo({top:0,left:0,behavior:"instant"});return;
+        }
+        else if (e.target.getAttribute("id")?.match(/nosplash/)) {
+            true;return;
+        }
+        else if (e.target.getAttribute("class")?.match(/clearresult/)) {
+            let _r=document.querySelector(".datacontent");
+            _r.innerText="";_r.style.borderTop="none";return;
+        }
+        else if (e.target.getAttribute("class")?.includes("closemodal") ) {
+            e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();
+            const _z2=document.querySelector("._sInfo");
+            _z2.close();return;
+        }
+})
+let waitsometime = false; 
+let doString = (_sObject)=>{
+let numberFormat = d3.format(","); 
+let x=document.createDocumentFragment();
+adiv=document.createElement("div");
+adiv.className="datacontent";
+adiv.style=`border-top:1px solid grey; padding-top:5px;`;
+adiv.innerHTML=`
+<div class="clearresult">Clear these results...</div>
+<div>
+<div>BIN: </div>
+<div>${_sObject["BIN"]} </div>
+</div>
+<div >
+<div >Address: </div>
+<div >${_sObject["Address"]}</div>
+</div>
+<div>
+<div >Borough: </div>
+<div >${_sObject["Borough"]}</div>
+</div>
+<div>
+<div >Block: </div>
+<div >${_sObject["Block"]}</div>
+</div>
+<div>
+<div>Lot: </div>
+<div >${_sObject["Lot"]}</div>
+</div>
+<div>
+<div >Community District: </div>
+<div >${_sObject["Community Board"]}</div>
+</div>
+<hr>
+<div>
+<div class="_tot">Total Amount Due<a target="_blank" href="https://www.nyc.gov/assets/buildings/pdf/dob-violations-guide.pdf"><span class="material-symbols-outlined xx">open_in_new</span></a></div>
+<div class="numbers _tot">\$${numberFormat(_sObject["Total DOB Civil Penalty Due ($)"])}</div>
+</div>
+<div>
+<div>Administrative Enforcement<a target="_blank" href="https://www.nyc.gov/site/buildings/dob/unit-descriptions.page"><span class="material-symbols-outlined xx">open_in_new</span></a></div> 
+<div class="numbers" >\$${numberFormat(_sObject["Administrative Enforcement"])}</div>
+</div>
+<div>
+    <div >Boilers<a target="_blank" href="https://www.nyc.gov/site/buildings/safety/resolve-dob-boiler-violations.page"><span class="material-symbols-outlined xx">open_in_new</span></a></div>
+<div class="numbers" >\$${numberFormat(_sObject["Boilers"])}</div>
+</div>
+<div>
+<div >Elevators<a target="_blank" href="https://www.nyc.gov/site/buildings/safety/resolve-dob-elevator-violations.page"><span class="material-symbols-outlined xx">open_in_new</span></a></div>
+<div class="numbers" >\$${numberFormat(_sObject["Elevators"])}</div>
+</div>
+<div>
+<div >Energy Benchmarking<a target="_blank" href="https://www.nyc.gov/site/buildings/codes/benchmarking.page"><span class="material-symbols-outlined xx">open_in_new</span></a></div>                
+<div class="numbers" >\$${numberFormat(_sObject["Energy Benchmarking"])}</div>
+</div>
+<div>
+<div >Energy EER<a target="_blank" href="https://www.nyc.gov/site/buildings/codes/energy-audits-retro-commissioning.page"><span class="material-symbols-outlined xx">open_in_new</span></a></div>
+<div class="numbers" >\$${numberFormat(_sObject["Energy EER"])}</div>
+</div>
+<div>
+<div >Energy Grades<a target="_blank" href="https://www.nyc.gov/site/buildings/property-or-business-owner/energy-grades.page"><span class="material-symbols-outlined xx">open_in_new</span></a></div>
+<div class="numbers" >\$${numberFormat(_sObject["Energy Grades"])}</div>
+</div>
+<div>
+<div>Facades<a target="_blank" href="https://www.nyc.gov/site/buildings/safety/resolve-dob-fa%C3%A7ade-violations.page"><span class="material-symbols-outlined xx">open_in_new</span></a></div>
+<div class="numbers" >\$${numberFormat(_sObject["Facades"])}</div>
+</div>
+<div class="_upd">Data Last Updated: ${Object.getOwnPropertyNames(_sObject)[17].substring(5)}</div>
+`;
+x.appendChild(adiv);
+document.querySelector(".datacontent").replaceWith(x)
+} 
+function dofetch(...args) {
+	let inputfield=document.querySelector("#myinput");
+	let makelist = args[0];
+	let dispdata = args[1];
+	let val=inputfield.value?.trim()?.toLowerCase().split(" ").filter(e=>e).join(" ").replace(/ \(bin.*/,"");
+	let addrSearch = document.querySelector("#addr").checked ? true : false;
+	fetch("data/AmountsDuePerBINdev.csv").then( response=>{
+			if(response.status==200){
+                    return response.text();
+            }
+			throw response;
+	}).then( textdata => { 
+		let mee=[];
+		const dataval = {bin:0,addrboro:""};
+            d3.csvParse(textdata,  (...autoD3Arguments)  =>  { 
+                let streetname = autoD3Arguments[0].Address.split(' ').filter(e=>e).join(' ').concat(" ", autoD3Arguments[0].Borough);
+                if (makelist & !dispdata){     
+                    let me = Object.create(dataval);
+                    me.bin=autoD3Arguments[0]['BIN'];
+                    me.addrboro=streetname;
+                    if ((autoD3Arguments[0].BIN.includes(val) && !addrSearch) || (streetname.toLowerCase().includes(val) && addrSearch) ) {
+                        mee.push(me     )
+                    }
+                }
+                else if (!makelist && dispdata ) { 
+                    alert();
+                    if (autoD3Arguments[0].BIN == document.querySelector("#myinput").getAttribute("data-bin")) {
+                        mee.push( autoD3Arguments[0]      )
+                    }
+                } 
+            });
+		    return mee; 
+		}).then(mee=>{ 
+             if (makelist && dispdata && mee.length==0) {
+                    alert();
+                    doerr();
+                }
+                if (dispdata && makelist && mee[0]?.BIN) {
+                    doString(mee[0]);
+                }
+                else if (dispdata && makelist && !mee[0] ) {
+                    doerr();
+                }
+                else if (makelist && !dispdata && mee.length>0) {
+                    if (mee.length > 100000){ 
+                       return;
+                    } 
+                    else   {
+                        let xtra = document.createElement("ul");
+                        document.querySelector(".divlist").replaceChildren();
+                        for (i=0;i<mee.length;i++) {
+                            lix=document.createElement("li");
+                            lix.setAttribute('data-bin',mee[i]['bin'])
+                            lix.setAttribute('class',"_li")
+                            lix.innerText=`${mee[i]['addrboro']} (BIN ${mee[i]['bin']})`;
+                            document.querySelector(".divlist").appendChild(lix);
+                            if (i > 100) break;
+                        }
+                        document.querySelector(".selectordiv").style.min_width=`"${document.querySelector("#myinput").clientWidth}px"`;
+                        document.querySelector(".selectordiv").style.display="block";
+                        document.querySelector(".divlist").style.display="block";
+                    }
+                }
+		}).catch(d3errResponse=>{
+            document.querySelector(".datacontent").innerText=`Uh Oh, there is an error!\n\nPlease contact DOB Customer Service (212) 393-2550.\n\nError code: ${d3errResponse.statusText}: ${d3errResponse.url}`;
+		})
+	.catch(csvErrResponse=>{ 
+		document.querySelector(".datacontent").innerText=`Uh Oh, there is an error!\n\nPlease contact DOB Customer Service (212) 393-2550.\n\nError code: ${csvErrResponse.statusText}: ${csvErrResponse.url}`;
+	}) 
+} 
+function dofetch2(...args) { 
+let inputfield=document.querySelector("#myinput");
+let val=inputfield.value?.trim()?.toLowerCase().split(" ").filter(e=>e).join(" ").replace(/ \(bin.*/,"");
+let gotbin = inputfield.getAttribute("data-bin");
+let addrSearch = document.querySelector("#addr").checked ? true : false;
+fetch("data/AmountsDuePerBINdev.csv").then( response=>{
+if(response.status==200){return response.text()}
+throw response;
+})
+.then( textdata => {
+let mee=[];
+const dataval = {bin:0,addrboro:""};
+if ( gotbin?.length==7 ){
+        d3.csvParse(textdata,  (...autoD3Arguments)  =>  { 
+        if (  (autoD3Arguments[0].BIN == gotbin) ) {
+        mee.push( autoD3Arguments[0] )
+        }
+        })
+        return mee;
+}
+else if ( addrSearch ) {
+        d3.csvParse(textdata,  (...autoD3Arguments)  =>  { 
+        let streetname = autoD3Arguments[0].Address.split(' ').filter(e=>e).join(' ').concat(" ", autoD3Arguments[0].Borough).toLowerCase();
+        if (  (streetname == val) ) {
+        mee.push( autoD3Arguments[0] )
+        }
+        })
+        return mee;
+}
+else if (val.length==7 && !!parseInt(val) && !addrSearch) {
+    d3.csvParse(textdata,  (...autoD3Arguments)  =>  { 
+    if (  (autoD3Arguments[0].BIN == val) ) {
+        mee.push( autoD3Arguments[0] )
+    }
+    })
+    return mee;
+}
+})
+.then( mee =>{
+    if ( mee?.length==1) {
+        doString(mee[0]);
+    } else  {
+        doerr();
+    }
+}) 
+.catch(errResponse=>{
+    alert();
+    document.querySelector(".datacontent").innerText=`Uh Oh, there is an error!\n\nPlease contact DOB Customer Service (212) 393-2550. \n\nError code: ${errResponse.statusText}: ${errResponse.url}`;
+});
+}
+
+const _clearList=()=>{document.querySelector(".divlist").style.display="none";
+document.querySelector(".selectordiv").style.display="none";
+document.querySelector(".divlist").replaceChildren("");
+};
+document.querySelectorAll("._r").forEach(x=>x.addEventListener('change',e=>{
+let theobj=document.querySelector("#myinput");
+theobj.setAttribute("data-bin","" );
+theobj.placeholder=(document.querySelector("#addr").checked)?"e.g. 280 Broadway Manhattan":"Enter a 7-digit BIN";
+_clearList();
+}))
+
+document.querySelector(".divlist").addEventListener("click",e=>{ 
+    e.stopPropagation();
+if (e.target.nodeName!="LI") return;
+_clearList();
+let theobj=document.querySelector("#myinput");
+theobj.value = e.target.innerText;
+theobj.setAttribute("data-bin", e.target.getAttribute("data-bin") );
+dofetch2();
+});
+
+document.querySelector("#myinput").addEventListener("input", e => {  //type something in field
+        e.stopPropagation();e.stopImmediatePropagation();
+        e.preventDefault();
+        _clearList();
+        let someval=e.target.value.trim();
+        e.target.setAttribute("data-bin","");
+        if (someval.length>3) {
+        if (waitsometime) return;
+        waitsometime=true;
+        setTimeout(() => {
+        dofetch(true,false); 
+        waitsometime=false;
+        }, 300);
+}})
+
+document.body.addEventListener("keydown",e=>{
+    e.stopPropagation();
+if (e.key=='Enter' && (document.activeElement.id=="myinput" || document.activeElement.id=="gobutton") && 
+    document.querySelector("#myinput").getAttribute("data-bin")?.length==7) {
+        _clearList();
+        dofetch2(true, true);
+    }
+    
+else if (  (document.activeElement.id=="myinput" && e.key=='Enter') )  {  
+    _clearList();
+    document.querySelector("#myinput")?.value?.trim() && dofetch2(true,true);
+    }
+else if (  (document.activeElement.id=="myinput" && e.key=='ArrowDown' &&document.querySelector(".divlist").childElementCount>0 ) )  { 
+    document.querySelector("._li").setAttribute("tabindex","-1")
+    document.querySelector("._li").focus();
+
+    let _z9=document.querySelector(".divlist");
+    _z9.focus();
+    }
+else if (e.key=="Tab" && document.activeElement.id=="myinput") {
+    _clearList();
+    document.querySelector("#myinput").focus();
+    }
+})
+
+document.querySelector("#gobutton").addEventListener("click", e=>{
+        e.stopPropagation();
+        _clearList();
+        document.querySelector("#myinput")?.value?.trim() && dofetch2(false,true); 
+        return;
+        if ( document.querySelector("#myinput").getAttribute("data-bin").length==7   ) { 
+        document.querySelector("#myinput")?.value?.trim() && dofetch2(false,true);return;
+        }
+        if ( document.querySelector("#myinput").getAttribute("data-bin").length!=7   ) { 
+        document.querySelector("#myinput")?.value?.trim() && dofetch2(true,true); 
+        }
+});
+return;
+}()
+</script>
+</body>
+</html>

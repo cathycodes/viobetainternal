@@ -1,0 +1,324 @@
+<!-- check for duplicate BINs -->
+<!DOCTYPE html>
+<html>
+  <title>DOB Violations $100k+ or More</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+  <link rel="icon" href="https://nycdob.github.io/ActiveNB_A1enlargements/data/iconlogo.png">
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="https://nycdob.github.io/ActiveNB_A1enlargements/keen/keen-dashboards.css" />
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css' rel='stylesheet' type='text/css'/>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="catsindex.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link href="https://nycdob.github.io/ActiveNB_A1enlargements/build/nv.d3.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" type="text/css" href="https://nycdob.github.io/ActiveShedPermits/build/nouislider.css" media="screen" />
+  <style>
+</style>
+<body>
+<dialog class="_sInfo" tabindex="-1">
+<form method="dialog">
+<span  class="material-symbols-outlined pull-right closemodal">Cancel</span>
+<h1>
+<img  src="DOB-NOW-logo.png" alt="DOB Now">
+Correcting and Removing DOB Violations
+</h1>
+<p>To remove a DOB violation from a property record, the condition must be corrected and proof of that correction must be provided to the issuing unit. Visit the <a href="https://www.nyc.gov/site/buildings/dob/unit-descriptions.page" target="_blank">Unit Descriptions</a>&nbsp;page for the location of each unit.&nbsp;</p>
+<p>Applicable DOB civil penalty payments must also be made. To view violations on your property, access the <a href="https://a810-bisweb.nyc.gov/bisweb/bsqpm01.jsp" target="_blank">Buildings Information System (BIS)</a>. Refer to the <b>BIS Property Profile Overview</b> for the number of open DOB violations. DOB violations are shown without an asterisk next to the violation number; dismissed DOB violations are shown with an asterisk, <b>e.g., V*7052-18P</b>.</p>
+<p>Detailed information on certain DOB violations is available in BIS. If detailed information is not available, you may request copies of DOB violations from the issuing unit. The processing fee is $8.00 per copy for each violation; each additional duplicate copy of a violation is $5.00. You may also file a Freedom of Information Law (FOIL) request through <a href="https://a860-openrecords.nyc.gov/" target="_blank">NYC OpenRecords</a>.</p>
+<p>See instructions for DOB:</p>
+<ul>
+<li><a target="_blank" href="https://www.nyc.gov/site/buildings/safety/resolve-dob-boiler-violations.page">Boiler Violations</a></li>
+<li><a target="_blank" href="https://www.nyc.gov/site/buildings/safety/resolve-dob-elevator-violations.page">Elevator Violations</a></li>
+<li><a target="_blank" href="https://www.nyc.gov/site/buildings/safety/resolve-dob-fa%c3%a7ade-violations.page">Façade Violations</a></li>
+<li><a target="_blank" href="https://www.nyc.gov/site/buildings/safety/resolve-dob-fire-safety-violations.page">Fire Safety Violations</a></li>
+</ul>
+<p>NOTE: This map includes only DOB Violations and does not include OATH Violations.</p>
+<p>For all other DOB violations, <a target="_blank" href="https://www.nyc.gov/site/buildings/dob/unit-descriptions.page">contact the issuing unit directly</a>.</p>
+<button class="center-block btn-lg bg-primary" autofocus>Close</button>
+<div class="small nosplash">
+<input type="checkbox" id="nosplash" name="nosplash" />
+<label for="nosplash">Do not show this splash screen again</label>
+</div>
+</form>
+</dialog>
+<div class="container">
+			<div class=" d-none d-lg-block  navbar navbar-fixed-top" role="navigation" style="color:white;background-color:RGB(61,74,87);">
+			<a class="logo" href="https://www1.nyc.gov/site/buildings/index.page" target="_blank"> </a>
+			<p class="pull-right showhelp" href="https://www.nyc.gov/site/buildings/safety/dob-violations.page" target="_blank">Violations Help</p>
+				<div class="nav navbar-nav">VIOLATION AMOUNT DUE - BUILDINGS THAT OWE $100,000 OR MORE
+				</div>
+			</div>
+</div>
+<div class="container row small text-muted">
+	<div id="sourceTxt">Built by DOB Analytics <a href="https://www1.nyc.gov/site/buildings/dob/analytics-reports.page" target="_blank">Dev Squad</a> | This map includes only DOB Violations and does not include OATH Violations. | Last Updated: <span id="_cat"> </span> | <a id="dlData">Download Data (csv)</a></div>
+</div>
+<div class="container-fluid dobmain" style="padding-top:5px;">
+	  <!-- <div id="map" style="border:1px solid black;height:90vh;zwidth:100%"> -->
+	  <div id="map" style="border:1px solid black;height:90vh">
+	  <div id="ui-slider" class="sliderContainer" style="z-index: 401"><p id="ageSliderTxt">Filter By Amount Due</p>
+		  <div id="slider-step" style="z-index: 401"></div>
+		  <span class="example-val" id="slider-range-value"></span>
+	  </div>				
+	  <svg></svg>
+	  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.9/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-format@3"></script>
+<script src="https://nycdob.github.io/EssentialActiveConstruction/Leaflet.D3SvgOverlay-master/L.D3SvgOverlay.min.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+<script src="https://d3js.org/d3-time-format.v2.min.js"></script>
+<script src="https://nycdob.github.io/ActiveShedPermits/build/nouislider.js"></script>
+<script src="https://nycdob.github.io/ActiveShedPermits/build/wNumb.js"></script>
+<script>
+document.querySelector("._sInfo").showModal();
+document.querySelector("dialog").scrollTo({top:0,left:0,behavior:"instant"});
+$(document).ready(function(){
+	var today = new Date();
+	var dd = today.getDate();
+	var mm = today.getMonth()+1;
+	var yyyy = today.getFullYear();
+	today = mm + '/' + dd + '/' + yyyy;	
+	d3.select("#today").html(today);
+	var formatDate = d3.time.format("%-m/%-d/%Y").parse;
+	//var numberFormat = d3.format(",.0f");
+	var numberFormat = d3.format("$,.2f"); 	
+	var legendNumFormat = d3.format(".3s");
+    L.Control.include({
+      _refocusOnMap: L.Util.falseFn // Do nothing.
+    });	
+var map = L.map('map').setView([40.76045581738958, -73.95084877908972], 13);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>'}).addTo(map);
+//var tooltipBox = d3.select('#map').append('div').attr('class', 'tooltipBox');
+var tooltipBox = d3.select('.leaflet-bottom.leaflet-left').append('div').attr('class', 'tooltipBox');
+
+
+
+
+var 
+	points = [],
+	pointsOverlaySQFT,
+	legendSQFT,
+	maxAmt,
+	minAmt,
+	radius;	
+onload = ready();
+function ready(){
+	//document.body.addEventListener("click",    e=>{
+	document.addEventListener("click",    e=>{
+			if (e.target.getAttribute("class")?.includes("showhelp")) {
+				e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();
+				const _z2=document.querySelector("._sInfo");
+				const _z9=document.querySelector(".closemodal");
+				_z9.focus();_z2.showModal();document.querySelector("dialog").scrollTo({top:0,left:0,behavior:"instant"});
+			} else 
+			if (e.target.getAttribute("id")?.match(/nosplash/)     ) {
+				console.log('nosplash')
+
+			}
+			if (e.target.getAttribute("class")?.includes("closemodal") ) {
+				e.preventDefault();e.stopImmediatePropagation();e.stopPropagation();
+				const _z2=document.querySelector("._sInfo");
+				_z2.close();
+			}})
+	let _lObj={"BIN":"BIN","Address":"Address","Borough":"Borough","Block":"Block","Lot":"Lot","Community District":"Community Board","<b>TOTAL VIOLATION AMOUNT DUE ($)</b>":"Total DOB Civil Penalty Due ($)","Administrative Amount Due ($)":"Administrative Enforcement","Energy Benchmarking Amount Due ($)":"Energy Benchmarking","Energy EER Amount Due ($)":"Energy EER","Energy Grades Amount Due ($)":"Energy Grades","Facades Amount Due ($)":"Facades","Boilers Amount Due ($)":"Boilers","Elevators Amount Due ($)":"Elevators",}
+	pointsOverlaySQFT = L.d3SvgOverlay(function(sel,proj){
+		var pointsUpdSQFT = sel.selectAll('circle').data(points);
+		maxAmt = d3.max(points.map(function(d) { return d.totalVioAmt }));
+		minAmt = d3.min(points.map(function(d) { return d.totalVioAmt }));
+		//console.log(maxAmt);
+		//console.log(minAmt);
+		createLegend(minAmt,maxAmt);
+		radius = d3.scale.sqrt()
+			.domain([0, maxAmt])
+			.range([0, 25])
+		function calcPropRadius(attributeValue) {
+			return Math.pow(attributeValue/2000,1/2)*100;
+		}
+		function createLegend(minLabel, maxLabel) {
+			legendSQFT = L.control( { position: "topleft" } );
+			legendSQFT.onAdd = function(map) {
+				var legendContainer = L.DomUtil.create("div", "legendSQFT");
+				var symbolsContainerSQFT = L.DomUtil.create("div", "symbolsContainerSQFT");
+				var classes = [14, 174, 362];
+				var classesLegendVals = [legendNumFormat(minLabel), legendNumFormat(Math.round((maxLabel-minLabel)/2)), legendNumFormat(maxLabel)];
+				var legendCircleSQFT;
+				var lastRadius = 0;
+				var currentRadius;
+				var margin;
+				$(legendContainer).append("<p id='legendTitleSQFT'>Violation Amount Due per Building ($)</p>");
+				for (var i = 0; i <= classes.length-1; i++) {
+					legendCircleSQFT = L.DomUtil.create("div", "legendCircleSQFT");
+					currentRadius = calcPropRadius(classes[i]);
+					margin = -currentRadius - lastRadius - 2;
+					
+					$(legendCircleSQFT).attr("style", "width: " + currentRadius*2 +
+							"px; height: " + currentRadius*2 +
+							"px; margin-left: " + margin + "px" );
+					$(legendCircleSQFT).append("<span class='legendValueSQFT'>"+classesLegendVals[i]+"</span>");
+					$(symbolsContainerSQFT).append(legendCircleSQFT);
+					lastRadius = currentRadius;
+				}
+				$(legendContainer).append(symbolsContainerSQFT);
+				return legendContainer;
+				};
+		}
+		pointsUpdSQFT.enter()
+			.append('circle')		
+			.attr("bin",function(d){return d["Bin"]})
+			.attr('cx',function(d){return proj.latLngToLayerPoint(d.latLng).x;})
+			.attr('cy',function(d){return proj.latLngToLayerPoint(d.latLng).y;})
+			.attr('class', function(d){
+				return "pointVioAmtDue";
+			})
+			.on('click', function(d){
+					tooltipBox.html(dit( (d["Lat"].slice(0,3)).concat(d["Lat"].slice(3,7),d["Long"].slice(0,4),d["Long"].slice(4,8)),1));
+					tooltipBox.style("visibility", "visible");
+			})
+			.on("mouseover", function(d, i){
+				_mOver($(this));		
+			})
+			.on("mouseout", function(d, i){			
+				$(this).attr("style", 	"fill: #B32420; fill-opacity: 0.5;" );
+			});
+			pointsUpdSQFT.attr("r", function(d) { return radius(d["Total DOB Civil Penalty Due ($)"]  / proj.scale); });
+			pointsUpdSQFT.attr("stroke-width", 1 / proj.scale);
+	});
+
+	const _mOver=(_var)=>{
+				let _sel=document.querySelector("circle[style*='rgb(238, 244, 66)'][class*='"+_var[0].className.baseVal+"']")||document.querySelector("circle[style*='#eef442'][class*='"+_var[0].className.baseVal+"']");
+				!!_sel && (_sel.style.fill = getComputedStyle(_var.siblings()[0]).fill) && _sel.classList.remove("selected");
+				_var.attr("style", "cursor: pointer; fill: #eef442; fill-opacity: 0.5;");			
+	}
+    const dit=(_pl,...args)=>{
+		if (!_pl) {tooltipBox.style("visibility","hidden");console.error("Invalid key");return ""};
+		if (!args[0] && !_pl.target.className.match(/_pr|_nx|_cl/)) {return};
+		let _dX=0;
+		let _l=[];
+		let doString = (_sObject,_dX, _l)=>{
+			let _xx='';
+			for (let [k,v] of Object.entries(_sObject) ) {
+				let _str=()=>
+				{
+				if (k.match(/amount/i)) {
+					return numberFormat(_l[_dX][`${v}`]);
+				}	
+				}
+				_xx+=`<div class="_fM3_0"><div>${k}:</div><div>${_str()||_l[_dX][`${v}`]}</div></div>`;
+			};
+			let truncor = _l[_dX]["Lat"].slice(0,3).concat(_l[_dX]["Lat"].slice(3,7),_l[_dX]["Long"].slice(0,4),_l[_dX]["Long"].slice(4,8));
+			return `<div class="_tD"><div class="_nav">${_dX+1} of ${_l.length}</div><div><span class="_pr" title="Previous">&#11207;</span><span class="_nx" title="Next">&#11208;</span></div><div style="font-size:17px;" title="Close" class="material-symbols-outlined _cl">close</div></div><div class="_cycleD"><span class="_cor">${truncor}</span>${_xx}</div>`;
+			}
+			let _sortD=(_ID) => {
+				return points.filter(_p=> _p["Lat"].slice(0,3).concat(_p["Lat"].slice(3,7),_p["Long"].slice(0,4),_p["Long"].slice(4,8)) ==_ID);
+			}
+			let _clr=()=>{
+			tooltipBox.style("visibility", "hidden");document.querySelector(".tooltipBox").innerHTML="";
+			document.querySelector(".tooltipBox").removeEventListener("click",dit);
+		}
+		if (!args[0]){
+			if (_pl.target.classList.contains("_cl")) {
+				_clr();return;
+			}
+			if (document.querySelector("._nav").textContent=="1 of 1"||(_pl.target.className!="_pr" && _pl.target.className!="_nx")){return};
+			let _key=document.querySelector("._cor").innerText;
+			_l=_sortD(_key);  if (!_l[0])   {_clr();console.error("Invalid key");return ""};
+			let _sN =parseInt(document.querySelector("._nav").textContent?.match(/(.*?) /));
+			if (!_sN| _sN<1||_sN>_l.length){_clr();console.error("Invalid key");return ""};
+			if (_pl.target.className=="_pr") {
+				if(_sN==1){_dX=_l.length-1} else {_dX=_sN-2;}
+			}
+			if (_pl.target.className=="_nx") {
+				if(_sN==_l.length){_dX=0} else {_dX=_sN;}
+			};
+			document.querySelector(".tooltipBox").innerHTML=doString(_lObj,_dX,_l);
+		} else {
+			_l=_sortD(_pl); 
+			if (!_l[0]) {_clr();console.error("Invalid key");return ""};
+			document.querySelector(".tooltipBox").removeEventListener("click",dit); 
+			document.querySelector(".tooltipBox").addEventListener("click",dit);
+			return doString(_lObj,_dX,_l);
+		};
+    }
+	 d3.csv("https://raw.githubusercontent.com/NYCDOB/ViosAmountDue/gh-pages/data/AmountsDuePerBINdev.csv",function(data){
+		// d3.csv("data/AmountsDuePerBINdev.csv",function(data){
+				points = data.filter(function(d) {
+					if( +d["Total DOB Civil Penalty Due ($)"] >= 100000 ) {
+						return d;
+					}
+				}).map(function(d){
+				d.latLng = [+d["Lat"],+d["Long"]];
+				d.bin = [d.BIN];
+
+				d.totalVioAmt = +d["Total DOB Civil Penalty Due ($)"];
+			return d;
+			});		
+			pointsOverlaySQFT.addTo(map);
+			d3.selectAll(".pointVioAmtDue").style("display", "block");
+			
+			legendSQFT.addTo(map);
+			d3.selectAll(".legendSQFT").style("display", "block");
+			
+			//SLIDER
+			var rangeSlider = document.getElementById('slider-step');
+
+			noUiSlider.create(rangeSlider, {
+				start: [minAmt],
+				connect: [true,false],
+				step: 500,
+				range: {
+					'min': minAmt,
+					//'50%': [25000], 
+					//'60%': [50000],
+					//'90%': [90000],
+					'max': maxAmt
+				},
+				format: wNumb({
+					decimals: 0,
+					thousand: ',',
+					prefix: '$'
+				})				
+			})
+
+			var rangeSliderValueElement = document.getElementById('slider-range-value');
+			var rangeSliderValueElementUnformat;
+			rangeSlider.noUiSlider.on('update', function (values, handle, unencoded){
+				rangeSliderValueElement.innerHTML = values[handle];
+				rangeSliderValueElementUnformat = unencoded[handle];
+				//console.log(rangeSliderValueElementUnformat);
+				setVal(rangeSliderValueElementUnformat);
+				//charts(rangeSliderValueElementUnformat)
+			});
+			function setVal(e){
+					d3.selectAll(".pointVioAmtDue").style("display", "block");
+					d3.selectAll(".pointVioAmtDue").filter(  d => {return d.totalVioAmt < e} ).style("display", "none");
+			}
+			(()=>{
+				const rine=document.createDocumentFragment();
+				adiv=document.createElement("a");
+				adiv.className="rine";
+				adiv.href="viobeta.html";
+				adiv.target="appwin"
+				adiv.innerHTML=`
+				<div class="rine2" >
+				Search Violations by Address or BIN<span class="material-symbols-outlined xx">open_in_new</span>
+				</div>`
+				rine.appendChild(adiv);
+				document.querySelector(".leaflet-top.leaflet-right").appendChild(rine)})();
+
+
+				if (document.querySelector("#_cat")) document.querySelector("#_cat").textContent=`${Object.getOwnPropertyNames(data[0])[Object.getOwnPropertyNames(data[0]).length-1].substring(5)}`;
+		});
+}
+	map.on('resize', function(){
+		map.invalidateSize();		
+	});
+	$('#dlData').click(function(e) {
+		e.preventDefault();  //stop the browser from following
+		window.location.href = 'https://nycdob.github.io/ViosAmountDue/data/AmountsDuePerBINdev.csv';
+	});
+});	
+</script>
+</body>
+</html>

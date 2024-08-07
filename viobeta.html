@@ -130,15 +130,19 @@ let x=document.createDocumentFragment();
 adiv=document.createElement("div");
 adiv.className="datacontent";
 adiv.innerHTML=`<div>
-<div><p>We’re sorry. We did not find any results for your search. Please try again.</p><p>Search Tips</p></div>
-<ul>
+<div>
+    <p>We’re sorry. We did not find any results for your search. Please try again.</p>
+    <p>Search Tips</p>
+    <ul>
 <li>Select the appropriate search type: Address or BIN </li>
 <li>Address example: &nbsp;40 Main Street Queens</li>
 <li>Check for spelling errors</li>
 <li>Type four (4) or more characters for property suggestions</li>
 <li>Type more characters in the search field for better suggestions</li>
 <li>Look up NYC addresses and BINs: <a href="https://a810-bisweb.nyc.gov/bisweb/bispi00.jsp" target="_blank">DOB Building Information Search</a>
-</li></ul></div>`;
+</li></ul>
+</div>
+</div>`;
 x.appendChild(adiv);
 document.querySelector(".datacontent").replaceWith(x)
 }
